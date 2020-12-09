@@ -17,7 +17,7 @@
 LOG_ERROR("PANIC! %s:%d (%s)\n", __FILE__, __LINE__, __func__); \
 LOG_ERROR(format, ##__VA_ARGS__); \
 LOG_FLUSH(); \
-*(int*)0 = 0
+__builtin_trap();
 
 #define DEBUG_ASSERTF(expression, format, ...) if (!(expression)) { \
 LOG_ERROR("Assertion failed at %s:%d (%s)\n", __FILE__, __LINE__, __func__); \

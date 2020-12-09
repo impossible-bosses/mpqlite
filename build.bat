@@ -25,26 +25,26 @@ exit /B 0
 if not exist "build" mkdir build
 cd build
 
-call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat" x64
-
 set INCLUDE_DIRS=-I ..\libs\StormLib\include -I ..\libs\stb_ds -I ..\libs\stb_sprintf
-set LIB_DIRS=-L ..\libs\StormLib\lib
-set LIBS=-l user32.lib -l storm.lib
+set LIB_DIRS=-L ..\libs\StormLib\lib\debug
+set LIBS=-l user32 -l storm
 
-REM zig cc -o %OUTPUT_EXE% %INCLUDE_DIRS% -L %LIB_DIRS% %LIBS% ..\src\main.c
-
-set CL_COMPILER_FLAGS=-nologo -Gm- -GR- -EHa- -EHsc -Z7
-set CL_WARNING_FLAGS=-WX -W4 -wd4100 -wd4127 -wd4201 -wd4204
-REM -std:c++latest
-
-set CL_LINKER_FLAGS=-incremental:no -opt:ref
-set CL_LIB_DIRS=-LIBPATH:..\libs\StormLib\lib\debug
-REM set CL_LIB_DIRS=-LIBPATH:..\libs\StormLib\lib\release
-set CL_LIBS=user32.lib storm.lib
-
-cl -MTd -Od %CL_WARNING_FLAGS% %CL_COMPILER_FLAGS% -Fe%OUTPUT_EXE% %INCLUDE_DIRS% ../src/main.c -link %CL_LIB_DIRS% %CL_LIBS%
-
+set ZIG_BUILD_LINE=zig cc -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS% ..\src\main.c
+echo %ZIG_BUILD_LINE%
+%ZIG_BUILD_LINE%
 exit /B %ERRORLEVEL%
+
+rem call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat" x64
+
+rem set CL_COMPILER_FLAGS=-nologo -Gm- -GR- -EHa- -EHsc -Z7
+rem set CL_WARNING_FLAGS=-WX -W4 -wd4100 -wd4127 -wd4201 -wd4204
+
+rem set CL_LINKER_FLAGS=-incremental:no -opt:ref
+rem set CL_LIB_DIRS=-LIBPATH:..\libs\StormLib\lib\debug
+rem set CL_LIBS=user32.lib storm.lib
+
+rem cl -MTd -Od %CL_WARNING_FLAGS% %CL_COMPILER_FLAGS% -Fe%OUTPUT_EXE% %INCLUDE_DIRS% ../src/main.c -link %CL_LIB_DIRS% %CL_LIBS%
+rem exit /B %ERRORLEVEL%
 
 :clean
 
