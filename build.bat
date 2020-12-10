@@ -2,7 +2,7 @@
 
 setlocal
 
-set OUTPUT_EXE=main.exe
+set OUTPUT_EXE=mpqlite.exe
 
 if "%1"=="" call :help
 if "%1"=="help" call :help
@@ -25,11 +25,11 @@ exit /B 0
 if not exist "build" mkdir build
 cd build
 
-set INCLUDE_DIRS=-I ..\libs\StormLib\include -I ..\libs\stb_ds -I ..\libs\stb_sprintf
+set INCLUDE_DIRS=-I ..\libs\StormLib\include -I ..\libs\stb_sprintf
 set LIB_DIRS=-L ..\libs\StormLib\lib\debug
 set LIBS=-l user32 -l storm
 
-set ZIG_BUILD_LINE=zig cc -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS% ..\src\main.c
+set ZIG_BUILD_LINE=zig cc -DAPP_WIN32 -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS% ..\src\main.c
 echo %ZIG_BUILD_LINE%
 %ZIG_BUILD_LINE%
 exit /B %ERRORLEVEL%

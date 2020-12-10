@@ -1,6 +1,15 @@
 #include "common.h"
 
+#if APP_WIN32
 #include <Windows.h>
+
+#elif APP_LINUX
+#include <stdlib.h>
+#include <sys/stat.h>
+
+#else
+#error "Unsupported platform"
+#endif
 
 const struct String emptyString = {0};
 
@@ -245,6 +254,7 @@ struct String ReadEntireFile(const struct String path)
         return result;
     }
 
+#if APP_WIN32
     HANDLE hFile = CreateFile(pathC, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         return result;
@@ -271,6 +281,32 @@ struct String ReadEntireFile(const struct String path)
     result.size = fileSize32;
     CloseHandle(hFile);
 
+#elif APP_LINUX
+    FILE* filePtr = fopen(pathC, "rb");
+    if (filePtr == NULL) {
+        return result;
+    }
+
+    fseek(filePtr, 0, SEEK_END);
+    const size_t size = ftell(filePtr);
+    rewind(filePtr);
+
+    result.str = malloc(size);
+    if (result.str == NULL) {
+        return result;
+    }
+
+    if (fread(result.str, size, 1, filePtr) != 1) {
+        free(result.str);
+        result.str = NULL;
+        return result;
+    }
+
+    result.size = size;
+    fclose(filePtr);
+
+#endif
+
     return result;
 }
 
@@ -281,6 +317,7 @@ bool WriteEntireFile(const struct String path, size_t size, const void* data, bo
         return false;
     }
 
+#if APP_WIN32
     HANDLE hFile = CreateFile(pathC, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, 0, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         return false;
@@ -309,6 +346,22 @@ bool WriteEntireFile(const struct String path, size_t size, const void* data, bo
 
     CloseHandle(hFile);
     return bytesWritten == (DWORD)size;
+
+#elif APP_LINUX
+    FILE* filePtr;
+    if (append) {
+        filePtr = fopen(pathC, "ab");
+    }
+    else {
+        filePtr = fopen(pathC, "w");
+    }
+
+    const size_t written = fwrite(data, size, 1, filePtr);
+    fclose(filePtr);
+
+    return written == 1;
+
+#endif
 }
 
 bool KmDeleteFile(const struct String path, bool failIfNotFound)
@@ -318,6 +371,7 @@ bool KmDeleteFile(const struct String path, bool failIfNotFound)
         return false;
     }
 
+#if APP_WIN32
     const BOOL result = DeleteFile(pathC);
     if (result == 0) {
         const DWORD error = GetLastError();
@@ -327,6 +381,12 @@ bool KmDeleteFile(const struct String path, bool failIfNotFound)
     }
 
     return true;
+
+#elif APP_LINUX
+    LOG_ERROR("Unimplemented on linux\n");
+    return false;
+
+#endif
 }
 
 bool KmCopyFile(const struct String srcPath, const struct String dstPath, bool failIfExists)
@@ -340,12 +400,20 @@ bool KmCopyFile(const struct String srcPath, const struct String dstPath, bool f
         return false;
     }
 
+#if APP_WIN32
     const BOOL result = CopyFile(srcPathC, dstPathC, failIfExists);
     return result != 0;
+
+#elif APP_LINUX
+    LOG_ERROR("Unimplemented on linux\n");
+    return false;
+
+#endif
 }
 
 bool CreateDirRecursive(const struct String path)
 {
+#if APP_WIN32
     char pathBuf[MAX_PATH];
     size_t nextSlash = 0;
     while (true) {
@@ -367,6 +435,12 @@ bool CreateDirRecursive(const struct String path)
     }
 
     return true;
+
+#elif APP_LINUX
+    LOG_ERROR("Unimplemented on linux\n");
+    return false;
+
+#endif
 }
 
 struct String StringAlloc(size_t size)
