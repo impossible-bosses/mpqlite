@@ -291,7 +291,7 @@ struct String ReadEntireFile(const struct String path)
     const size_t size = ftell(filePtr);
     rewind(filePtr);
 
-    result.str = malloc(size);
+    result.str = (char*)malloc(size);
     if (result.str == NULL) {
         return result;
     }
@@ -445,7 +445,7 @@ bool CreateDirRecursive(const struct String path)
 
 struct String StringAlloc(size_t size)
 {
-    struct String result = { .size = size, .str = malloc(size) };
+    struct String result = { .size = size, .str = (char*)malloc(size) };
     return result;
 }
 

@@ -15,8 +15,8 @@ build()
 	INCLUDE_DIRS="-I ../libs/StormLib/include -I ../libs/stb_sprintf"
 	LIB_DIRS="-L ../libs/StormLib/lib/debug -L /usr/lib/x86_64-linux-gnu"
 	# TODO ew, stdc++
-	LIBS="-lstorm -lz -lbz2 -lstdc++"
-	ZIG_BUILD_LINE="zig cc -DAPP_LINUX -o $OUTPUT_EXE $INCLUDE_DIRS $LIB_DIRS $LIBS ../src/main.c"
+	LIBS="-lstorm-arm -lz -lbz2 -lstdc++"
+	ZIG_BUILD_LINE="g++ ../src/main.c -DAPP_LINUX -o $OUTPUT_EXE $INCLUDE_DIRS $LIB_DIRS $LIBS"
 
 	echo $ZIG_BUILD_LINE
 	$ZIG_BUILD_LINE
