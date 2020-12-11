@@ -85,7 +85,7 @@ struct String MpqliteRead(const char* mpqFilePath, const char* fileName)
     return result;
 }
 
-bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct String data)
+bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct String data, bool overwrite)
 {
     HANDLE hMpq;
     const bool result = SFileOpenArchive(mpqFilePath, 0, 0, &hMpq);
@@ -103,6 +103,14 @@ bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct St
 
     while (true) {
         if (strcmp(findData.cFileName, fileName) == 0) {
+            if (!overwrite) {
+                LOG_ERROR("File %s already in MPQ archive %s, not overwriting\n", fileName, mpqFilePath);
+                if (!SFileCloseArchive(hMpq)) {
+                    LOG_ERROR("Failed to close MPQ archive %s, error %lu\n", mpqFilePath, GetLastError());
+                }
+                return false;
+            }
+
             if (!SFileRemoveFile(hMpq, fileName, 0)) {
                 LOG_ERROR("Failed to remove MPQ archive file for overwrite: %s, error %lu\n",
                           fileName, GetLastError());

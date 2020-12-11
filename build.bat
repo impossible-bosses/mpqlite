@@ -64,9 +64,15 @@ exit /B %ERRORLEVEL%
 if not exist "build" mkdir build
 cd build
 
-set ZIG_BUILD_LINE=zig cc ..\src\test.c %DEFINES% -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS%
+set ZIG_BUILD_LINE=zig cc ..\src\test.c %DEFINES% -o test_mpqlite.exe %INCLUDE_DIRS% %LIB_DIRS% %LIBS%
 echo %ZIG_BUILD_LINE%
 %ZIG_BUILD_LINE%
+if not %ERRORLEVEL%==0 exit /B %ERRORLEVEL%
+
+copy ..\test\empty.mpq .\empty.mpq
+copy ..\test\random.txt .\random.txt
+copy ..\test\random.mpq .\random.mpq
+.\test_mpqlite.exe
 exit /B %ERRORLEVEL%
 
 :setup
