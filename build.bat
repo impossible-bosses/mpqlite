@@ -4,6 +4,11 @@ setlocal
 
 set OUTPUT_EXE=mpqlite.exe
 
+set DEFINES=-DAPP_WIN32
+set INCLUDE_DIRS=-I ..\libs\StormLib\include -I ..\libs\stb_sprintf
+set LIB_DIRS=-L ..\libs\StormLib\lib\debug
+set LIBS=-l user32 -l storm
+
 if "%1"=="" call :help
 if "%1"=="help" call :help
 if "%1"=="build" call :build
@@ -25,11 +30,7 @@ exit /B 0
 if not exist "build" mkdir build
 cd build
 
-set INCLUDE_DIRS=-I ..\libs\StormLib\include -I ..\libs\stb_sprintf
-set LIB_DIRS=-L ..\libs\StormLib\lib\debug
-set LIBS=-l user32 -l storm
-
-set ZIG_BUILD_LINE=zig cc -DAPP_WIN32 -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS% ..\src\main.c
+set ZIG_BUILD_LINE=zig cc ..\src\main.c %DEFINES% -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS%
 echo %ZIG_BUILD_LINE%
 %ZIG_BUILD_LINE%
 exit /B %ERRORLEVEL%
@@ -60,8 +61,13 @@ exit /B %ERRORLEVEL%
 
 :test
 
-echo "test unimplemented"
-exit /B 1
+if not exist "build" mkdir build
+cd build
+
+set ZIG_BUILD_LINE=zig cc ..\src\test.c %DEFINES% -o %OUTPUT_EXE% %INCLUDE_DIRS% %LIB_DIRS% %LIBS%
+echo %ZIG_BUILD_LINE%
+%ZIG_BUILD_LINE%
+exit /B %ERRORLEVEL%
 
 :setup
 
