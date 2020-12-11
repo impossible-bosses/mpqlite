@@ -11,6 +11,7 @@
 #error "Unsupported platform"
 #endif
 
+const size_t PATH_MAX_LENGTH = 256;
 const struct String emptyString = {0};
 
 bool CharIsWhitespace(char c)
@@ -249,8 +250,8 @@ struct String ReadEntireFile(const struct String path)
         .str = NULL
     };
 
-    char pathC[MAX_PATH];
-    if (!ToCString(path, MAX_PATH, pathC)) {
+    char pathC[PATH_MAX_LENGTH];
+    if (!ToCString(path, PATH_MAX_LENGTH, pathC)) {
         return result;
     }
 
@@ -312,8 +313,8 @@ struct String ReadEntireFile(const struct String path)
 
 bool WriteEntireFile(const struct String path, size_t size, const void* data, bool append)
 {
-    char pathC[MAX_PATH];
-    if (!ToCString(path, MAX_PATH, pathC)) {
+    char pathC[PATH_MAX_LENGTH];
+    if (!ToCString(path, PATH_MAX_LENGTH, pathC)) {
         return false;
     }
 
@@ -366,8 +367,8 @@ bool WriteEntireFile(const struct String path, size_t size, const void* data, bo
 
 bool KmDeleteFile(const struct String path, bool failIfNotFound)
 {
-    char pathC[MAX_PATH];
-    if (!ToCString(path, MAX_PATH, pathC)) {
+    char pathC[PATH_MAX_LENGTH];
+    if (!ToCString(path, PATH_MAX_LENGTH, pathC)) {
         return false;
     }
 
@@ -391,12 +392,12 @@ bool KmDeleteFile(const struct String path, bool failIfNotFound)
 
 bool KmCopyFile(const struct String srcPath, const struct String dstPath, bool failIfExists)
 {
-    char srcPathC[MAX_PATH];
-    if (!ToCString(srcPath, MAX_PATH, srcPathC)) {
+    char srcPathC[PATH_MAX_LENGTH];
+    if (!ToCString(srcPath, PATH_MAX_LENGTH, srcPathC)) {
         return false;
     }
-    char dstPathC[MAX_PATH];
-    if (!ToCString(dstPath, MAX_PATH, dstPathC)) {
+    char dstPathC[PATH_MAX_LENGTH];
+    if (!ToCString(dstPath, PATH_MAX_LENGTH, dstPathC)) {
         return false;
     }
 
@@ -414,7 +415,7 @@ bool KmCopyFile(const struct String srcPath, const struct String dstPath, bool f
 bool CreateDirRecursive(const struct String path)
 {
 #if APP_WIN32
-    char pathBuf[MAX_PATH];
+    char pathBuf[PATH_MAX_LENGTH];
     size_t nextSlash = 0;
     while (true) {
         nextSlash = StringFindFirstFrom(path, '/', nextSlash + 1);
