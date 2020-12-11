@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "common.h"
 #include "mpqlite.h"
@@ -33,13 +34,14 @@ int main(int argc, char* argv[])
 
         const struct String outPath = ToString(argv[4]);
         if (!WriteEntireFile(outPath, result.size, result.str, false)) {
-            LOG_ERROR("Failed to write to output file \"%.*s\"\n", outPath.size, outPath.str);
+            LOG_ERROR("Failed to write to output file \"%.*s\"\n", (int)outPath.size, outPath.str);
             LOG_FLUSH();
             return 1;
         }
-        free(result.str);
 
-        LOG_INFO("Output file \"%s\" from MPQ \"%s\" file \"%s\"\n", dstPath, mpqFilePath, fileName);
+        LOG_INFO("Output file \"%.*s\" from MPQ \"%s\" file \"%s\"\n",
+            (int)outPath.size, outPath.str, mpqFilePath, fileName);
+        free(result.str);
     }
     else if (StringEqual(mode, MODE_WRITE)) {
         if (argc != 5) {
@@ -48,14 +50,24 @@ int main(int argc, char* argv[])
             return 1;
         }
 
+        const struct String srcPath = ToString(argv[4]);
+        const struct String data = ReadEntireFile(srcPath);
+        if (data.str == NULL) {
+            LOG_ERROR("Failed to read input file %.*s\n", (int)srcPath.size, srcPath.str);
+            return 1;
+        }
+
         const char* mpqFilePath = argv[2];
         const char* fileName = argv[3];
-        const char* srcPath = argv[4];
-        if (!MpqliteWriteFile(mpqFilePath, fileName, srcPath)) {
+        if (!MpqliteWrite(mpqFilePath, fileName, data)) {
             LOG_ERROR("Failed to patch file \"%s\" in MPQ \"%s\"\n", fileName, mpqFilePath);
             LOG_FLUSH();
             return 1;
         }
+
+        LOG_INFO("Wrote file \"%.*s\" into MPQ \"%s\" file \"%s\"\n",
+            (int)srcPath.size, srcPath.str, mpqFilePath, fileName);
+        free(data.str);
     }
     else {
         LOG_ERROR("mpqlite takes 1 mode argument: mpqlite <extract/patch> <other-args>\n");

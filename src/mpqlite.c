@@ -29,7 +29,7 @@ struct String MpqliteRead(const char* mpqFilePath, const char* fileName)
             if (!SFileOpenFileEx(hMpq, fileName, 0, &hFile)) {
                 LOG_ERROR("Failed to open MPQ archive file %s, error %lu\n",
                           fileName, GetLastError());
-                return false;
+                return result;
             }
 
             result.size = findData.dwFileSize;
@@ -87,13 +87,6 @@ struct String MpqliteRead(const char* mpqFilePath, const char* fileName)
 
 bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct String data)
 {
-    const struct String srcPathString = ToString(srcPath);
-    struct String srcData = ReadEntireFile(srcPathString);
-    if (srcData.str == NULL) {
-        LOG_ERROR("Failed to read patch source file %s\n", srcPath);
-        return false;
-    }
-
     HANDLE hMpq;
     const bool result = SFileOpenArchive(mpqFilePath, 0, 0, &hMpq);
     if (!result) {
@@ -127,12 +120,12 @@ bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct St
     //     dwFlags |= MPQ_FILE_ENCRYPTED;
     // }
     HANDLE hNewFile;
-    if (!SFileCreateFile(hMpq, fileName, 0, (DWORD)srcData.size, 0, dwFlags, &hNewFile)) {
+    if (!SFileCreateFile(hMpq, fileName, 0, (DWORD)data.size, 0, dwFlags, &hNewFile)) {
         LOG_ERROR("Failed to re-create MPQ archive file %s, error %lu\n", fileName, GetLastError());
         return false;
     }
 
-    if (!SFileWriteFile(hNewFile, srcData.str, (DWORD)srcData.size, MPQ_COMPRESSION_BZIP2)) {
+    if (!SFileWriteFile(hNewFile, data.str, (DWORD)data.size, MPQ_COMPRESSION_BZIP2)) {
         LOG_ERROR("Failed to write MPQ archive file %s, error %lu\n", fileName, GetLastError());
         return false;
     }
@@ -147,6 +140,5 @@ bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct St
         LOG_ERROR("Failed to close MPQ archive %s, error %lu\n", mpqFilePath, GetLastError());
     }
 
-    LOG_INFO("Wrote file \"%s\" into MPQ \"%s\" file \"%s\"\n", srcPath, mpqFilePath, fileName);
     return true;
 }
