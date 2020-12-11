@@ -27,10 +27,12 @@
 #ifndef __STORMPORT_H__
 #define __STORMPORT_H__
 
+#if 0
 #ifndef __cplusplus
   #define bool char
   #define true 1
   #define false 0
+#endif
 #endif
 
 //-----------------------------------------------------------------------------

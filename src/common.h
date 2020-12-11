@@ -1,6 +1,9 @@
 #pragma once
 
+#include <stb_sprintf.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define KILOBYTES(bytes) ((bytes) * 1024LL)
 #define MEGABYTES(bytes) (KILOBYTES(bytes) * 1024LL)

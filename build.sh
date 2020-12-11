@@ -24,7 +24,7 @@ build()
 		exit 1
 	fi
 	LIBS="$LIBS -lz -lbz2 -lstdc++"
-	ZIG_BUILD_LINE="g++ ../src/main.c -DAPP_LINUX -o $OUTPUT_EXE $INCLUDE_DIRS $LIB_DIRS $LIBS"
+	ZIG_BUILD_LINE="gcc ../src/main.c -DAPP_LINUX -o $OUTPUT_EXE $INCLUDE_DIRS $LIB_DIRS $LIBS"
 
 	echo $ZIG_BUILD_LINE
 	$ZIG_BUILD_LINE
