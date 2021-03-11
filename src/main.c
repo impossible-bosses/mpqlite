@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
         const char* mpqFilePath = argv[2];
         const char* fileName = argv[3];
-        if (!MpqliteWrite(mpqFilePath, fileName, data)) {
+        if (!MpqliteWrite(mpqFilePath, fileName, data, true)) {
             LOG_ERROR("Failed to patch file \"%s\" in MPQ \"%s\"\n", fileName, mpqFilePath);
             LOG_FLUSH();
             return 1;
