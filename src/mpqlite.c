@@ -85,10 +85,10 @@ struct String MpqliteRead(const char* mpqFilePath, const char* fileName)
     return result;
 }
 
-bool MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct String data, bool overwrite)
+int MpqliteWrite(const char* mpqFilePath, const char* fileName, const struct String data, int overwrite)
 {
     HANDLE hMpq;
-    const bool result = SFileOpenArchive(mpqFilePath, 0, 0, &hMpq);
+    const int result = SFileOpenArchive(mpqFilePath, 0, 0, &hMpq);
     if (!result) {
         LOG_ERROR("Failed to open MPQ archive %s, error %lu\n", mpqFilePath, GetLastError());
         return false;
