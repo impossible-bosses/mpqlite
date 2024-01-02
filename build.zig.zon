@@ -9,8 +9,8 @@
     },
     .dependencies = .{
         .storm = .{
-            .url = "https://github.com/impossible-bosses/StormLib/archive/593d21685cbcf60ee58fc3e15efa21407f44bf7d.tar.gz",
-            .hash = "1220d68773a064645f5f9ee9e0030c2ed9953c072afbad789cbb1580beeac1172d5b",
+            .url = "https://github.com/impossible-bosses/StormLib/archive/c3e36cf26fab07bbd6044f40c86ba070d0411260.tar.gz",
+            .hash = "122099bfb2853bc0d3177d588fa185e82e8fd494703eae81e6d50bb90c29a49116b8",
         },
     },
 }

@@ -23,6 +23,9 @@ pub fn build(b: *std.Build) void
     exe.addIncludePath(.{.path = "libs/stb_sprintf"});
     exe.linkLibrary(stormlib);
     exe.linkLibCpp();
+    if (b.host.target.os.tag == .windows) {
+        exe.linkSystemLibrary("Wininet");
+    }
     b.installArtifact(exe);
 
     // const main_tests = b.addTest(.{
